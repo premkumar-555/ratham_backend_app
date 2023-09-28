@@ -12,6 +12,3 @@ const userModel = mongoose.model('User', userSchema);
 
 module.exports = userModel;
 
-user_name : "Premkumar"
-university_id: "S001"
-password:"PK202"

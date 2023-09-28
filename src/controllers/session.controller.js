@@ -36,7 +36,10 @@ router.get('/get_sessions', async(req, res) => {
             ]}
         }
         // ,
-        const sessions = await sessionModel.find(conditions);
+        const sessions = await sessionModel.find(conditions)
+        .populate({path: 'dean', select: '-password'})
+        .populate({path: 'student_allotted', select: '-password'}).exec();
+        console.log(sessions)
         return res.status(200).send(sessions)
     } catch (error) {
         return res.status(500).send(error)
