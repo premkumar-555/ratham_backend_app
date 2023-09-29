@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 const sessionModel = require("../Models/session.model");
 const validateSession = require("../middlewares/validateSession");
+const validateAuth = require("../middlewares/validateAuth");
 // post sessions
-router.post("/post_sessions", async (req, res) => {
+router.post("/post_sessions", validateAuth, async (req, res) => {
   try {
     const sessions = await sessionModel.create(req.body);
     return res.status(200).send("Sessions Posted Successfully!");
@@ -13,7 +14,7 @@ router.post("/post_sessions", async (req, res) => {
 });
 
 // get sessions
-router.get("/get_sessions", async (req, res) => {
+router.get("/get_sessions", validateAuth, async (req, res) => {
   try {
     const { dean_id } = req.query;
     let conditions;
@@ -63,29 +64,26 @@ router.get("/get_sessions", async (req, res) => {
   }
 });
 
-// book a slot
-router.post(
-  "/book_session/:id",
+const validations = [
+  validateAuth,
   validateSession(`Credentials are missing / Wrong credentials are provided!`),
-  async (req, res) => {
-    try {
-      const id = req.params.id;
-      if (!id) {
-        return res.status(400).send(`Please provide session_id!`);
-      }
-      const targetSession = await sessionModel.findById(id);
-      if (!targetSession) {
-        return res.status(400).send(`Session_id does not exist`);
-      }
-      const session = await sessionModel.findByIdAndUpdate(
-        { _id: id },
-        req.body
-      );
-      return res.status(200).send("Session Booked Successfully!");
-    } catch (error) {
-      return res.status(500).send(error);
+];
+// book a slot
+router.post("/book_session/:id", validations, async (req, res) => {
+  try {
+    const id = req.params.id;
+    if (!id) {
+      return res.status(400).send(`Please provide session_id!`);
     }
+    const targetSession = await sessionModel.findById(id);
+    if (!targetSession) {
+      return res.status(400).send(`Session_id does not exist`);
+    }
+    const session = await sessionModel.findByIdAndUpdate({ _id: id }, req.body);
+    return res.status(200).send("Session Booked Successfully!");
+  } catch (error) {
+    return res.status(500).send(error);
   }
-);
+});
 
 module.exports = router;

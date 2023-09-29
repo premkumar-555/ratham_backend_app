@@ -31,4 +31,5 @@ router.post("/user_login", validateSession(`Credentials are missing :`), async (
   }
 });
 
-module.exports = router;
+module.exports = { router, token: bearerToken?.token};
+
