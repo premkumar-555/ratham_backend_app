@@ -17,6 +17,7 @@ router.post("/post_sessions", validateAuth, async (req, res) => {
 // get sessions
 router.get("/get_sessions", validateAuth, async (req, res) => {
   try {
+    console.log("getting");
     const { dean_id } = req.query;
     let conditions;
     if (dean_id) {
@@ -53,20 +54,12 @@ router.get("/get_sessions", validateAuth, async (req, res) => {
         ],
       };
     }
-    // ,
     const sessions = await sessionModel
       .find(conditions)
       .populate({ path: "dean", select: "-password" })
       .populate({ path: "student_allotted", select: "-password" })
       .exec();
-    if (sessions) {
-      const formattedSessions = sessions.map((ele) => ({
-        ...ele,
-        date: new Date(date),
-      }));
-      console.log(formattedSessions);
-      return res.status(200).send(formattedSessions);
-    }
+    return res.status(200).send(sessions);
   } catch (error) {
     return res.status(500).send(error);
   }
