@@ -17,7 +17,6 @@ router.post("/post_sessions", validateAuth, async (req, res) => {
 // get sessions
 router.get("/get_sessions", validateAuth, async (req, res) => {
   try {
-    console.log("getting");
     const { dean_id } = req.query;
     let conditions;
     if (dean_id) {
@@ -78,7 +77,7 @@ router.post("/book_session/:id", validations, async (req, res) => {
     }
     const targetSession = await sessionModel.findById(id);
     if (!targetSession) {
-      return res.status(400).send(`Session_id does not exist`);
+      return res.status(400).send(`Session does not exist`);
     }
     const session = await sessionModel.findByIdAndUpdate({ _id: id }, req.body);
     return res.status(200).send("Session Booked Successfully!");
