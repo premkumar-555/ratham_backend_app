@@ -2,14 +2,14 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 require("dotenv").config();
-const PORT = process?.env?.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 const connect = require("./dbConfig/dbconfig");
 app.use(cors());
 app.use(express.json());
 
 // controllers
 const sessionsController = require("./controllers/session.controller");
-const { router: usersController } = require("./controllers/user.controller");
+const usersController = require("./controllers/user.controller");
 
 // listen to respective controllers
 app.use("/sessions", sessionsController);

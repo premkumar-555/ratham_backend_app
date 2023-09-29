@@ -3,6 +3,7 @@ const router = express.Router();
 const sessionModel = require("../Models/session.model");
 const validateSession = require("../middlewares/validateSession");
 const validateAuth = require("../middlewares/validateAuth");
+const moment = require("moment");
 // post sessions
 router.post("/post_sessions", validateAuth, async (req, res) => {
   try {
@@ -58,7 +59,14 @@ router.get("/get_sessions", validateAuth, async (req, res) => {
       .populate({ path: "dean", select: "-password" })
       .populate({ path: "student_allotted", select: "-password" })
       .exec();
-    return res.status(200).send(sessions);
+    if (sessions) {
+      const formattedSessions = sessions.map((ele) => ({
+        ...ele,
+        date: new Date(date),
+      }));
+      console.log(formattedSessions);
+      return res.status(200).send(formattedSessions);
+    }
   } catch (error) {
     return res.status(500).send(error);
   }
